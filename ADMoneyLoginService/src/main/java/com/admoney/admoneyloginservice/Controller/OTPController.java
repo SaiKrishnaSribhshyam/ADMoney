@@ -1,16 +1,24 @@
 package com.admoney.admoneyloginservice.Controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class OTPController {
 
     @GetMapping("/getOTP")
-    public String getOTP(@RequestParam(name="mobilenum") String mobileNum){
+    public LoginServiceResponseDTOObject getOTP(@RequestParam(name="mobilenum") String mobileNum){
         System.out.println("123456");
-        return mobileNum;
+        return null;
+    }
+
+    @RequestMapping(method = RequestMethod.POST,name="/validateOTP")
+    public LoginServiceResponseDTOObject validateOTP(@RequestParam(name="otp") String otp){
+        return null;
+    }
+
+    @RequestMapping(method=RequestMethod.GET, value="/validateUser")
+    public LoginServiceResponseDTOObject validateUser(@RequestParam(name="mobilenum") String mobileNum){
+        return null;
     }
 }
