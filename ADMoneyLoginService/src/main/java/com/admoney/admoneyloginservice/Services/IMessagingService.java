@@ -1,8 +1,8 @@
 package com.admoney.admoneyloginservice.Services;
 
-import com.admoney.admoneyloginservice.models.Status;
-import com.admoney.admoneyloginservice.models.User;
+import com.admoney.admoneyloginservice.Models.User;
+import com.google.gson.JsonObject;
 
 public  interface IMessagingService {
-    public Status sendMessage(User user, String otp);
+    public JsonObject sendMessage(User user, String otp);
 }

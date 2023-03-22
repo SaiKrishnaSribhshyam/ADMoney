@@ -1,7 +1,7 @@
 package com.admoney.admoneyloginservice.Repos;
 
-import com.admoney.admoneyloginservice.models.User;
-import com.admoney.admoneyloginservice.models.Status;
+import com.admoney.admoneyloginservice.Models.User;
+import com.admoney.admoneyloginservice.Models.Status;
 
 import java.util.HashMap;
 

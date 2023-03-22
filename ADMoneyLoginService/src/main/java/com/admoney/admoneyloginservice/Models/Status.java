@@ -1,4 +1,4 @@
-package com.admoney.admoneyloginservice.models;
+package com.admoney.admoneyloginservice.Models;
 
 public enum Status {
     SUCCESS,
