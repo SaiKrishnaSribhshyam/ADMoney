@@ -1,15 +1,24 @@
 package com.admoney.admoneyloginservice.Controller;
 
 import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
+import com.admoney.admoneyloginservice.Models.DataStaxAstraProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@EnableConfigurationProperties(DataStaxAstraProperties.class)
 public class OTPController {
+    @Autowired
+    DataStaxAstraProperties astraProperties;
 
     @GetMapping("/getOTP")
     public LoginServiceResponseDTOObject getOTP(@RequestParam(name="mobilenum") String mobileNum){
-        System.out.println("123456");
-        return null;
+        LoginServiceResponseDTOObject responseDTOObject=new LoginServiceResponseDTOObject();
+        responseDTOObject.setMessage(astraProperties.getSeureConnectBundle().toString());
+        responseDTOObject.setStatus("Success");
+        responseDTOObject.setStatusCode(200);
+        return responseDTOObject;
     }
 
     @RequestMapping(method = RequestMethod.POST,name="/validateOTP")

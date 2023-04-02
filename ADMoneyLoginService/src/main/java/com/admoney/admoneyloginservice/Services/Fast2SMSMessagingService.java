@@ -1,6 +1,6 @@
 package com.admoney.admoneyloginservice.Services;
 
-import com.admoney.admoneyloginservice.Models.User;
+import com.admoney.admoneyloginservice.Models.UserOTP;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class Fast2SMSMessagingService implements IMessagingService{
     }
 
     @Override
-    public JsonObject sendMessage(User user, String otp){
+    public JsonObject sendMessage(UserOTP userOTP){
         //setting headers
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -32,9 +32,9 @@ public class Fast2SMSMessagingService implements IMessagingService{
         JsonObject body=new JsonObject();
         body.addProperty("route","otp");
         body.addProperty("sender_id","ADMoney");
-        body.addProperty("variables_values",otp);
+        body.addProperty("variables_values",userOTP.getOtp());
         body.addProperty("flash", 0);
-        body.addProperty("numbers",user.getMobileNum());
+        body.addProperty("numbers",userOTP.getMobileNum());
         //HTTP Request
         HttpEntity<String> request=new HttpEntity<>(body.toString(),headers);
 

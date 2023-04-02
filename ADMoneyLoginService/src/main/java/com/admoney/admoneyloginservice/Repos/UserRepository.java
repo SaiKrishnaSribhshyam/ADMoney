@@ -1,21 +1,11 @@
 package com.admoney.admoneyloginservice.Repos;
 
 import com.admoney.admoneyloginservice.Models.User;
-import com.admoney.admoneyloginservice.Models.Status;
+import org.springframework.data.cassandra.repository.AllowFiltering;
+import org.springframework.data.cassandra.repository.CassandraRepository;
 
-import java.util.HashMap;
+public interface UserRepository extends CassandraRepository<User,String> {
 
-public class UserRepository {
-    private HashMap<String, User> repo=new HashMap<String,User>();
-
-    public boolean addOrUpdateUser(User user){
-        repo.put(user.getMobileNum(),user);
-        return true;
-    }
-
-    public boolean isValidUser(String mobileNum){
-        if(repo.containsKey(mobileNum) && repo.get(mobileNum).getStatus()== Status.SUCCESS)
-            return true;
-        return false;
-    }
+    @AllowFiltering
+    User findUserByMobileNum(String mobileNum);
 }

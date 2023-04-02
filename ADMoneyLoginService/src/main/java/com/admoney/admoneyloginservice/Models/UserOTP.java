@@ -4,17 +4,17 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 @Table
-public class User extends BaseModel{
+public class UserOTP extends BaseModel{
     @PrimaryKey
     private String mobileNum;
-    private Status status;
+    private String otp;
 
-    public User() {
+    public UserOTP(String mobileNum, String otp) {
+        this.mobileNum = mobileNum;
+        this.otp = otp;
     }
+    public UserOTP(){
 
-    public User(String mobileNum){
-        this.mobileNum=mobileNum;
-        this.status = Status.PENDING;
     }
 
     public String getMobileNum() {
@@ -25,11 +25,11 @@ public class User extends BaseModel{
         this.mobileNum = mobileNum;
     }
 
-    public Status getStatus() {
-        return status;
+    public String getOtp() {
+        return otp;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 }
