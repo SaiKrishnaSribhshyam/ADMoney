@@ -1,9 +1,14 @@
 package com.admoney.admoneyloginservice.Services;
 
+import com.admoney.admoneyloginservice.Models.User;
 import com.admoney.admoneyloginservice.Models.UserOTP;
+import com.admoney.admoneyloginservice.Repos.UserOTPRepository;
+import com.admoney.admoneyloginservice.Repos.UserRepository;
+import com.admoney.admoneyloginservice.Utils.TimeStampFormatter;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,14 +20,22 @@ public class Fast2SMSMessagingService implements IMessagingService{
     private String fast2smsurl;
     private String authToken;
     private Logger logger= LoggerFactory.getLogger(Fast2SMSMessagingService.class);
+    private UserRepository userRepository;
+    private UserOTPRepository userOTPRepository;
 
-    public Fast2SMSMessagingService(@Value("${admoney.fast2sms.url}") String fast2smsurl,@Value("${admoney.fast2sms.token}")String authToken){
+    @Autowired
+    public Fast2SMSMessagingService(@Value("${admoney.fast2sms.url}") String fast2smsurl,@Value("${admoney.fast2sms.token}")String authToken, UserRepository userRepository,UserOTPRepository userOTPRepository){
         this.fast2smsurl=fast2smsurl;
         this.authToken=authToken;
+        this.userRepository=userRepository;
+        this.userOTPRepository=userOTPRepository;
     }
 
     @Override
     public JsonObject sendMessage(UserOTP userOTP){
+        User user=new User(userOTP.getMobileNum());
+        userRepository.save(user);
+
         //setting headers
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,8 +57,11 @@ public class Fast2SMSMessagingService implements IMessagingService{
         ResponseEntity<JsonObject> response=restTemplate.postForEntity(fast2smsurl,request, JsonObject.class);
         logger.info(response.getStatusCode().toString());
         JsonObject responneJson=new JsonObject();
-        if(response.getStatusCode()== HttpStatus.OK)
-            responneJson.addProperty("response","OK");
+        if(response.getStatusCode()== HttpStatus.OK) {
+            responneJson.addProperty("response", "OK");
+            userOTP.setTimeStamp(TimeStampFormatter.getCurrentTimeStamp());
+            userOTPRepository.save(userOTP);
+        }
         else
             responneJson.addProperty("response","ERROR");
 

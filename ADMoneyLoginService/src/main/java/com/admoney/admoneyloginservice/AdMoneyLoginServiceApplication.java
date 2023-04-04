@@ -26,8 +26,9 @@ public class AdMoneyLoginServiceApplication {
       @Autowired
     public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
         //logger.info(astraProperties.getSeureConnectBundle().toString());
-        File file=new File("C:\\Users\\Sony\\IdeaProjects\\ADMoney\\ADMoneyLoginService\\src\\main\\resources\\secure-connect-admoneydb.zip");
-        Path bundle = file.toPath();
+        File file=new File("secure-connect-admoneydb.zip");
+          //Path bundle = file.toPath();
+        Path bundle = astraProperties.getSeureConnectBundle().toPath();
         return builder -> builder.withCloudSecureConnectBundle(bundle);
     }
 
