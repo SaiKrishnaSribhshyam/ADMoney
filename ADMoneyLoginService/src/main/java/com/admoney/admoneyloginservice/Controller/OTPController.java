@@ -38,7 +38,7 @@ public class OTPController {
         return responseDTOObject;
     }
 
-    @RequestMapping(method = RequestMethod.POST,name="/validateOTP")
+    @RequestMapping(method=RequestMethod.POST,value="/validateOTP")
     public LoginServiceResponseDTOObject validateOTP(@RequestBody LoginServiceRequestDTOObject loginServiceRequestDTOObject){
         UserOTP userOTP=new UserOTP(loginServiceRequestDTOObject.getMobileNum(), loginServiceRequestDTOObject.getOtp());
         return otpValidationService.validateOTP(userOTP);
