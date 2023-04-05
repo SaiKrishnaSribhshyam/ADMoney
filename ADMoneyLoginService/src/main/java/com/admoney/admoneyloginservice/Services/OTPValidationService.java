@@ -1,12 +1,12 @@
 package com.admoney.admoneyloginservice.Services;
 
+import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
 import com.admoney.admoneyloginservice.Models.Status;
 import com.admoney.admoneyloginservice.Models.User;
 import com.admoney.admoneyloginservice.Models.UserOTP;
 import com.admoney.admoneyloginservice.Repos.UserOTPRepository;
 import com.admoney.admoneyloginservice.Repos.UserRepository;
 import com.admoney.admoneyloginservice.Utils.TimeStampFormatter;
-import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +21,36 @@ public class OTPValidationService {
         this.userOTPRepository=userOTPRepository;
     }
 
-    public JsonObject validateOTP(UserOTP userOTP){
+    public LoginServiceResponseDTOObject validateOTP(UserOTP userOTP){
         UserOTP messagedUserOTP=userOTPRepository.findUserOTPByMobileNum(userOTP.getMobileNum());
         User user=userRepository.findUserByMobileNum(userOTP.getMobileNum());
-        JsonObject responseJson=new JsonObject();
+        LoginServiceResponseDTOObject responseDTOObject=new LoginServiceResponseDTOObject();
 
         if(user==null){
-            responseJson.addProperty("response","Invalid User");
+            responseDTOObject.setMessage("Invalid User");
+            responseDTOObject.setStatus("Failed");
+            responseDTOObject.setStatusCode(100);
         } else if(user.getStatus()==Status.SUCCESS){
-            responseJson.addProperty("response","Invalid request");
+            responseDTOObject.setMessage("Invalid request");
+            responseDTOObject.setStatus("Failed");
+            responseDTOObject.setStatusCode(110);
         } else if(!isLatestOTP(messagedUserOTP)) {
-            responseJson.addProperty("response","Invalid OTP");
+            responseDTOObject.setMessage("Invalid OTP");
+            responseDTOObject.setStatus("Failed");
+            responseDTOObject.setStatusCode(120);
         }  else if(userOTP.getOtp().equals(messagedUserOTP.getOtp())){
             user.setStatus(Status.SUCCESS);
             userRepository.save(user);
-            responseJson.addProperty("response","Validation Success");
+            userOTPRepository.delete(messagedUserOTP);
+            responseDTOObject.setMessage("Validation Success");
+            responseDTOObject.setStatus("Success");
+            responseDTOObject.setStatusCode(200);
         } else{
-            responseJson.addProperty("response","Incorrect OTP");
+            responseDTOObject.setMessage("Incorrect OTP");
+            responseDTOObject.setStatus("Failed");
+            responseDTOObject.setStatusCode(130);
         }
-        return responseJson;
+        return responseDTOObject;
     }
 
     public boolean isLatestOTP(UserOTP messagedUserOTP){

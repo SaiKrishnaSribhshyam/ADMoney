@@ -1,10 +1,10 @@
 package com.admoney.admoneyloginservice;
 
+import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
 import com.admoney.admoneyloginservice.Models.UserOTP;
 import com.admoney.admoneyloginservice.Repos.UserOTPRepository;
 import com.admoney.admoneyloginservice.Repos.UserRepository;
 import com.admoney.admoneyloginservice.Services.Fast2SMSMessagingService;
-import com.google.gson.JsonObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -27,8 +27,8 @@ public class a_SMSServiceTest {
 
     @Test
     public void testMessageService(){
-        JsonObject response=messagingService.sendMessage(userOTP);
-        logger.info(response.toString());
-        org.junit.Assert.assertEquals("\"OK\"",response.get("response").toString());
+        LoginServiceResponseDTOObject responseDTOObject=messagingService.sendMessage(userOTP);
+        logger.info(responseDTOObject.getStatus());
+        org.junit.Assert.assertEquals("\"Success\"",responseDTOObject.getStatus());
     }
 }

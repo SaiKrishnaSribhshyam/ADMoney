@@ -1,5 +1,6 @@
 package com.admoney.admoneyloginservice.Services;
 
+import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
 import com.admoney.admoneyloginservice.Models.User;
 import com.admoney.admoneyloginservice.Models.UserOTP;
 import com.admoney.admoneyloginservice.Repos.UserOTPRepository;
@@ -32,7 +33,7 @@ public class Fast2SMSMessagingService implements IMessagingService{
     }
 
     @Override
-    public JsonObject sendMessage(UserOTP userOTP){
+    public LoginServiceResponseDTOObject sendMessage(UserOTP userOTP){
         User user=new User(userOTP.getMobileNum());
         userRepository.save(user);
 
@@ -56,15 +57,21 @@ public class Fast2SMSMessagingService implements IMessagingService{
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<JsonObject> response=restTemplate.postForEntity(fast2smsurl,request, JsonObject.class);
         logger.info(response.getStatusCode().toString());
-        JsonObject responneJson=new JsonObject();
+
+        LoginServiceResponseDTOObject responseDTOObject=new LoginServiceResponseDTOObject();
         if(response.getStatusCode()== HttpStatus.OK) {
-            responneJson.addProperty("response", "OK");
+            responseDTOObject.setStatus("Success");
+            responseDTOObject.setStatusCode(200);
+            responseDTOObject.setMessage("Message sent to User Successfully");
             userOTP.setTimeStamp(TimeStampFormatter.getCurrentTimeStamp());
             userOTPRepository.save(userOTP);
         }
-        else
-            responneJson.addProperty("response","ERROR");
+        else {
+            responseDTOObject.setStatus("Failed");
+            responseDTOObject.setStatusCode(100);
+            responseDTOObject.setMessage("Failed to send Message");
+        }
 
-        return responneJson;
+        return responseDTOObject;
     }
 }
