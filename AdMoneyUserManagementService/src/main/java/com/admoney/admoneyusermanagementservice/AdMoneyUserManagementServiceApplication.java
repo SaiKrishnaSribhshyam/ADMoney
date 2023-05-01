@@ -1,0 +1,31 @@
+package com.admoney.admoneyusermanagementservice;
+
+import com.admoney.admoneyusermanagementservice.Models.DataStaxAstraProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cassandra.CqlSessionBuilderCustomizer;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+
+import java.io.File;
+import java.nio.file.Path;
+
+@SpringBootApplication
+@EnableConfigurationProperties(DataStaxAstraProperties.class)
+public class AdMoneyUserManagementServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AdMoneyUserManagementServiceApplication.class, args);
+    }
+    @Bean
+    @Autowired
+    public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
+        //logger.info(astraProperties.getSeureConnectBundle().toString());
+        File file=new File("secure-connect-admoneydb.zip");
+        //Path bundle = file.toPath();
+        Path bundle = astraProperties.getSeureConnectBundle().toPath();
+        return builder -> builder.withCloudSecureConnectBundle(bundle);
+    }
+
+}
