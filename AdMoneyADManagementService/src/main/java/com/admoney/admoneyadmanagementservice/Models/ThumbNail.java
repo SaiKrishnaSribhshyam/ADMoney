@@ -3,15 +3,13 @@ package com.admoney.admoneyadmanagementservice.Models;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+@Table
 @Getter
 @Setter
-@Table
-public class WatchedAd extends BaseModel{
-    @OneToMany
+public class ThumbNail extends BaseModel{
     private Ad ad;
-    @OneToMany
-    private User user;
+    private String s3URL;
+    private String s3Key;
 }

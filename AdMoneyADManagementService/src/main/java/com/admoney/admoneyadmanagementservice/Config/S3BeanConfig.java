@@ -20,7 +20,7 @@ public class S3BeanConfig {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    @Bean
+    @Bean(name="adMoneyS3Client")
     public AmazonS3 getS3Client(){
         return AmazonS3ClientBuilder
                 .standard()
