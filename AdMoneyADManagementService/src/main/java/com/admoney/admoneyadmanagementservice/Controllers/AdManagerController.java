@@ -4,24 +4,36 @@ import com.admoney.admoneyadmanagementservice.DTOS.*;
 import com.admoney.admoneyadmanagementservice.Exceptions.AdNotAvailalbeException;
 import com.admoney.admoneyadmanagementservice.Models.S3Object;
 import com.admoney.admoneyadmanagementservice.Models.S3ObjectType;
+import com.admoney.admoneyadmanagementservice.Services.AuthenticationService;
 import com.admoney.admoneyadmanagementservice.Services.S3StorageService;
-import com.amazonaws.services.ec2.model.RequestSpotFleetRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.sasl.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
 public class AdManagerController {
     private S3StorageService s3StorageService;
-
+    private AuthenticationService authenticationService;
+    private Logger logger= LoggerFactory.getLogger(AdManagerController.class);
     @Autowired
-    public AdManagerController(S3StorageService s3StorageService){
+    public AdManagerController(S3StorageService s3StorageService,AuthenticationService authenticationService){
         this.s3StorageService=s3StorageService;
+        this.authenticationService=authenticationService;
     }
 
     @RequestMapping(method = RequestMethod.POST,value = "/uploadAd")
-    public ResponseDTO uploadFile(@ModelAttribute AdUploadDTO adUploadDTO) throws IOException {
+    public ResponseDTO uploadFile(@ModelAttribute AdUploadDTO adUploadDTO, HttpServletRequest httpRequest) throws IOException {
+        logger.info("reached controller");
+        if(!authenticationService.isAuthenticated(httpRequest))
+            throw new AuthenticationException("User not authenicated");
+        logger.info("Authentication completed");
         S3Object adVideoS3Object=new S3Object();
         adVideoS3Object.setMultipartFile(adUploadDTO.getAdVideo());
         adVideoS3Object.setObjectType(S3ObjectType.AD);
@@ -61,6 +73,13 @@ public class AdManagerController {
         return null;
     }
 
+
+    @RequestMapping(method=RequestMethod.GET)
+    public ResponseEntity getAdById(){
+        return null;
+    }
+
+
     @ExceptionHandler({IOException.class, AdNotAvailalbeException.class})
     public ResponseDTO adManagerControllerExceptionHandler(){
         ResponseDTO responseDTO=new ResponseDTO();
@@ -69,4 +88,6 @@ public class AdManagerController {
         responseDTO.setMessage("Please check your inputs and try again");
         return responseDTO;
     }
+
+
 }

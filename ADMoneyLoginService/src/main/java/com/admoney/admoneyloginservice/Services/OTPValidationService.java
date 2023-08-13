@@ -1,5 +1,6 @@
 package com.admoney.admoneyloginservice.Services;
 
+import com.admoney.admoneyloginservice.Config.KafkaProducer;
 import com.admoney.admoneyloginservice.DTOs.LoginServiceResponseDTOObject;
 import com.admoney.admoneyloginservice.Models.Status;
 import com.admoney.admoneyloginservice.Models.User;
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service;
 public class OTPValidationService {
     private UserRepository userRepository;
     private UserOTPRepository userOTPRepository;
+    private KafkaProducer kafkaProducer;
 
     @Autowired
-    public OTPValidationService(UserRepository userRepository,UserOTPRepository userOTPRepository){
+    public OTPValidationService(UserRepository userRepository, UserOTPRepository userOTPRepository, KafkaProducer kafkaProducer){
         this.userRepository=userRepository;
         this.userOTPRepository=userOTPRepository;
+        this.kafkaProducer=kafkaProducer;
     }
 
     public LoginServiceResponseDTOObject validateOTP(UserOTP userOTP){
@@ -45,6 +48,7 @@ public class OTPValidationService {
             responseDTOObject.setMessage("Validation Success");
             responseDTOObject.setStatus("Success");
             responseDTOObject.setStatusCode(200);
+            //kafkaProducer.sendMessage(user);
         } else{
             responseDTOObject.setMessage("Incorrect OTP");
             responseDTOObject.setStatus("Failed");

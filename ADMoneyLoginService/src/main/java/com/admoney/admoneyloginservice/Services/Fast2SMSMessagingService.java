@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 
 @Service
 public class Fast2SMSMessagingService implements IMessagingService{
@@ -23,6 +24,8 @@ public class Fast2SMSMessagingService implements IMessagingService{
     private Logger logger= LoggerFactory.getLogger(Fast2SMSMessagingService.class);
     private UserRepository userRepository;
     private UserOTPRepository userOTPRepository;
+    @Autowired
+    WebApplicationContext webApplicationContext;
 
     @Autowired
     public Fast2SMSMessagingService(@Value("${admoney.fast2sms.url}") String fast2smsurl,@Value("${admoney.fast2sms.token}")String authToken, UserRepository userRepository,UserOTPRepository userOTPRepository){

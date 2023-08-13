@@ -1,9 +1,11 @@
 package com.admoney.admoneyloginservice.Models;
 
+import lombok.ToString;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 @Table
+@ToString
 public class User extends BaseModel{
     @PrimaryKey
     private String mobileNum;
